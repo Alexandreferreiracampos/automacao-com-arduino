@@ -1,0 +1,269 @@
+Enviar dados pela internet 
+#include <SPI.h>
+#include <String.h>
+#include <Ethernet.h>
+
+
+byte mac[] = {0x90, 0xA2, 0x0D, 0x84, 0X89};
+IPAddress ip(192,168,0,200);
+EthernetServer server(80);
+
+int rele1 = A0;
+int rele2 = A1;
+int rele3 = A2;
+int rele4 = A3;
+int rele5 = A4;
+int rele6 = A5;
+int rele7 = 9;
+
+int relea = 8;
+int releb = 7;
+int relec = 6;
+int reled = 5;
+ 
+
+String readString = String(30);
+
+String statusrele;
+
+void setup()
+{
+  Serial.begin(9600);
+  
+  Ethernet.begin(mac, ip);
+  pinMode(rele1, OUTPUT);
+  pinMode(rele2, OUTPUT);
+  pinMode(rele3, OUTPUT);
+  pinMode(rele4, OUTPUT);
+  pinMode(rele5, OUTPUT);
+  pinMode(rele6, OUTPUT);
+  pinMode(rele7, OUTPUT);
+  pinMode(relea, OUTPUT);
+  pinMode(releb, OUTPUT);
+  pinMode(relec, OUTPUT);
+  pinMode(reled, OUTPUT);
+ 
+  digitalWrite(rele1, LOW);
+  digitalWrite(rele2, LOW);
+  digitalWrite(rele3, LOW);
+  digitalWrite(rele4, LOW);
+  digitalWrite(rele5, LOW);
+  digitalWrite(rele6, LOW);
+  digitalWrite(rele7, LOW);
+  digitalWrite(relea, LOW);
+  digitalWrite(releb, LOW);
+  digitalWrite(relec, LOW);
+  digitalWrite(reled, LOW);
+
+  }
+  
+
+
+  
+
+ void loop()
+ {
+  EthernetClient client = server.available();
+  
+
+  if(client)
+  {
+    while(client.connected())
+    {
+      if(client.available())
+      {
+        char c = client.read();
+        if(readString.length() < 30) {
+          readString += (c);
+          }
+         if(c == '\n')
+        {
+
+          if(readString.indexOf("rele1") >= 0) {
+            digitalWrite(rele1, !digitalRead(rele1));
+            }
+           if(readString.indexOf("rele2") >= 0) {
+            digitalWrite(rele2, !digitalRead(rele2));
+            }
+            if(readString.indexOf("rele3") >= 0) {
+            digitalWrite(rele3, !digitalRead(rele3));
+            }
+            if(readString.indexOf("rele4") >= 0) {
+            digitalWrite(rele4, !digitalRead(rele4));
+            }
+            if(readString.indexOf("rele5") >= 0) {
+            digitalWrite(rele5, !digitalRead(rele5));
+            }
+            if(readString.indexOf("rele6") >= 0) {
+            digitalWrite(rele6, !digitalRead(rele6));
+            }
+            if(readString.indexOf("rele7") >= 0) {
+            digitalWrite(rele7, !digitalRead(rele7));
+            }
+            if(readString.indexOf("relea") >= 0) {
+            digitalWrite(relea, !digitalRead(relea));
+            }
+            if(readString.indexOf("releb") >= 0) {
+            digitalWrite(releb, !digitalRead(releb));
+            }
+            if(readString.indexOf("relec") >= 0) {
+            digitalWrite(relec, !digitalRead(relec));  
+            }
+            if(readString.indexOf("reled") >= 0) {
+            digitalWrite(reled, !digitalRead(reled));
+            }
+
+            //enviar dados pela porta serial
+            
+            if(readString.indexOf("relee") >= 0) {
+            Serial.write('A');
+            }
+            
+            if(readString.indexOf("relef") >= 0) {
+            Serial.write('B');
+            }
+            
+            if(readString.indexOf("releg") >= 0) {
+            Serial.write('C');
+            }
+            
+            if(readString.indexOf("releh") >= 0) {
+            Serial.write('D');
+            }
+            
+            if(readString.indexOf("relei") >= 0) {
+            Serial.write('E');
+            }
+            
+            if(readString.indexOf("relej") >= 0) {
+            Serial.write('F');
+            }
+            
+            if(readString.indexOf("relek") >= 0) {
+            Serial.write('G');
+            }
+            
+            if(readString.indexOf("relel") >= 0) {
+            Serial.write('H');
+            }
+            
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-Type: text/html");
+          client.println("Connection: close");  // the connection will be closed after completion of the response 
+          client.println();
+          client.println("<!doctype html>");
+          client.println("<html>");
+          client.println("<head>");
+          client.println("<title>CASA</title>");
+          client.println("<meta name=\"viewport\" content=\"width=320\">");
+          client.println("<meta name=\"viewport\" content=\"width=device-width\">");
+          client.println("<meta charset=\"utf-8\">");
+          client.println("<meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\">");
+          client.println("</head>");
+          client.println("<body>");
+          client.println("<center>");
+          client.println("<font size=\"5\" face=\"verdana\" color=\"green\">Smart Home</font>");
+          client.println("<font size=\"3\" face=\"verdana\" color=\"red\">  </font>");
+          client.println("<font size=\"5\" face=\"verdana\" color=\"blue\">Alexandre</font><br />");
+          client.println("<form action=\"rele1\" method=\"get\">");
+          client.println("<button type=submit style=\"width:200px;\">rele 1 - </button>");
+          client.println("</form> <br />");
+          client.println("</center>");
+          client.println("</body>");
+          client.println("</html>");
+
+ 
+
+        readString = "";
+
+       client.stop();
+
+           }
+      
+      }
+    }
+  }
+}
+
+
+Capturar dados enviado pelo outro arduino
+
+#define rele1 2
+#define rele2 3
+#define rele3 5
+#define rele4 6
+#define rele5 7
+#define rele6 8
+#define rele7 9
+#define rele8 A0
+
+
+
+
+void setup(){
+  Serial.begin(9600);
+  //PORTA CONFIGURADAS COMO SAIDA
+  pinMode(rele1,OUTPUT);
+  pinMode(rele2,OUTPUT);
+  pinMode(rele3,OUTPUT);
+  pinMode(rele4,OUTPUT);
+  pinMode(rele5,OUTPUT);
+  pinMode(rele6,OUTPUT);
+  pinMode(rele7,OUTPUT);
+  pinMode(rele8,OUTPUT);
+  
+  //PORTAS CONFIGURADAS COM NIVEL LOGICO BAIXO
+  digitalWrite(rele1,LOW);
+  digitalWrite(rele2,LOW);
+  digitalWrite(rele3,LOW);
+  digitalWrite(rele4,LOW);
+  digitalWrite(rele5,LOW);
+  digitalWrite(rele6,LOW);
+  digitalWrite(rele7,LOW);
+  digitalWrite(rele8,LOW);
+}
+
+void loop(){
+  if(Serial.available()>0){
+    char c=Serial.read();
+    if(c=='A'){
+      digitalWrite(rele1, !digitalRead(rele1)); 
+    }
+    
+    if(c=='B'){
+      digitalWrite(rele2, !digitalRead(rele2)); 
+    }
+    
+    if(c=='C'){
+      digitalWrite(rele3, !digitalRead(rele3)); 
+    }
+    
+    if(c=='D'){
+      digitalWrite(rele4, !digitalRead(rele4)); 
+    }
+    
+    if(c=='E'){
+      digitalWrite(rele5, !digitalRead(rele5)); 
+    }
+    
+    if(c=='F'){
+      digitalWrite(rele6, !digitalRead(rele6));
+    }
+    
+    if(c=='G'){
+      digitalWrite(rele7, !digitalRead(rele8)); 
+    }
+    
+    if(c=='H'){
+      digitalWrite(rele8, !digitalRead(rele8)); 
+    }
+   
+  }
+}
+
+
+
+  }}
+
+
+
